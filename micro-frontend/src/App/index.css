@@ -1,0 +1,7 @@
+.app {
+  display: flex;
+}
+
+.module {
+  flex: 5;
+}
