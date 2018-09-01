@@ -6,20 +6,37 @@ import {
   Link
 } from 'react-router-dom'
 import { withRouter } from 'react-router'
+import { loadCssStatic, loadJsStatic, hashCode } from '../help'
+import config from '../config'
 import './index.css'
 
 class App extends Component {
-  
-  handleClick = ({ item, key }) => {
+  componentDidMount() {
+    // 做一些路由切换处理，防止刷新时页面不正确
+  }
+
+  handleClick = ({ key }) => {
     this.props.history.push(`/${key}`)
     document.getElementById('module').innerHTML = `<${key}></${key}>`
     // 通信
     // window.dispatchEvent(new CustomEvent('react-app::addCount', { detail: 10 }))
-    document.querySelector('react-app').setAttribute('name', 'abc')
-  }
-
-  componentDidMount() {
-    // 做一些路由切换处理，防止刷新时页面不正确
+    // 设置属性
+    // document.querySelector('react-app').setAttribute('name', 'abc')
+    // 最好将资源加载和路由切换进行封装
+    config.cssPath[key].forEach((cssPath) => {
+      const id = hashCode(cssPath)
+      const isExist = document.getElementById(id)
+      if (!isExist) {
+        loadCssStatic(cssPath)
+      }
+    })
+    config.jsPath[key].forEach((jsPath) => {
+      const id = hashCode(jsPath)
+      const isExist = document.getElementById(id)
+      if (!isExist) {
+        loadJsStatic(jsPath)
+      }
+    })
   }
 
   render() {
